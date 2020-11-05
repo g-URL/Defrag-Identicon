@@ -1,0 +1,29 @@
+{
+  "name": "Defrag-Identicon",
+  "version": "1.0.0",
+  "description": "Modification of my identicon with GIMP.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/g-URL/Defrag-Identicon.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/g-URL/Defrag-Identicon/issues"
+  },
+  "homepage": "https://github.com/g-URL/Defrag-Identicon#readme",
+  "dependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.5"
+  }
+}
