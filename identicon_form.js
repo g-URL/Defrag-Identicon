@@ -8,12 +8,35 @@ class IdenticonForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { 
-            handle: 'g-url',
-            url: '',
-        };
+        this.state = { handle: 'g-url', url: '' };
+        
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        // icons
+        this.bad = new Image(64,64);
+        this.bad.src = '/assets/icons/bad.png';
+
+        this.beginning = new Image(64, 64);
+        this.beginning.src = '/assets/icons/beginning.png';
+
+        this.end = new Image(64, 64);
+        this.end.src = '/assets/icons/end.png';
+
+        this.middle = new Image(64, 64);
+        this.middle.src = '/assets/icons/middle.png';        
+
+        this.move = new Image(64, 64);
+        this.move.src = '/assets/icons/move.png';
+
+        this.optimized = new Image(64, 64);
+        this.optimized.src = '/assets/icons/optimized.png';
+
+        this.read = new Image(64, 64);
+        this.read.src = '/assets/icons/read.png';        
+
+        this.write = new Image(64, 64);
+        this.write.src = '/assets/icons/write.png';
     }
 
     handleChange(event) {
@@ -27,17 +50,21 @@ class IdenticonForm extends React.Component {
         this.setState({ url: 'https://github.com/identicons/'+this.state.handle+'.png' })
 
         // https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
-        var canvas = document.getElementById("myCanvas");
-        var ctx = canvas.getContext("2d");
-        var img = document.getElementById("identicon")
+        const canvas = document.getElementById('myCanvas');
+        const context = canvas.getContext('2d');
+        let img = document.getElementById('identicon');
         img.src = this.state.url;
-        ctx.drawImage(img, 0, 0);   // looks like coordinates reflect upper-left-hand corner
+        context.drawImage(img, 0, 0);   // looks like coordinates reflect upper-left-hand corner
 
+
+
+        
         // this works!!!
-        var img2 = new Image();
-        img2.src = '/assets/bad.png';
-        ctx.drawImage(img2, 0, 0);   // looks like coordinates reflect upper-left-hand corner
+        context.drawImage(this.optimized, 0, 0);   // looks like coordinates reflect upper-left-hand corner
+        context.drawImage(this.optimized, 220, 220);   // looks like coordinates reflect upper-left-hand corner
 
+        let pixelData = context.getImageData(1,1,1,1);
+        console.log(pixelData);
     }
 
     render() {
