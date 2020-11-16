@@ -27,11 +27,16 @@ class IdenticonForm extends React.Component {
         this.setState({ url: 'https://github.com/identicons/'+this.state.handle+'.png' })
 
         // https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
-        var c = document.getElementById("myCanvas");
-        var ctx = c.getContext("2d");
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
         var img = document.getElementById("identicon")
         img.src = this.state.url;
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0);   // looks like coordinates reflect upper-left-hand corner
+
+        // this works!!!
+        var img2 = new Image();
+        img2.src = '/assets/bad.png';
+        ctx.drawImage(img2, 0, 0);   // looks like coordinates reflect upper-left-hand corner
 
     }
 
@@ -44,7 +49,7 @@ class IdenticonForm extends React.Component {
                     <input type='text' value={this.state.handle} onChange={this.handleChange} />
                     <button type='submit'>Fetch Identicon!</button>    
                 </form>
-                <img id='identicon' width='420' height='420' src={this.state.url} alt=''/>
+                <img id='identicon' width='420' height='420' src={this.state.url}/>
                 <br></br>
                 <canvas id='myCanvas' height='420' width='420'>
                 </canvas>
