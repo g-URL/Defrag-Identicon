@@ -76,7 +76,7 @@ class IdenticonForm extends React.Component {
                     <input type='text' value={this.state.handle} onChange={this.handleChange} />
                     <button type='submit'>Fetch Identicon!</button>    
                 </form>
-                <img id='identicon' width='420' height='420' src={this.state.url}/>
+                <img id='identicon' width='420' height='420' crossorigin src ={this.state.url}/>
                 <br></br>
                 <canvas id='myCanvas' height='420' width='420'>
                 </canvas>
