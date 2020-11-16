@@ -63,8 +63,8 @@ class IdenticonForm extends React.Component {
        // context.drawImage(this.optimized, 0, 0);   // looks like coordinates reflect upper-left-hand corner
        // context.drawImage(this.optimized, 220, 220);   // looks like coordinates reflect upper-left-hand corner
 
-     //   let pixelData = context.getImageData(1,1,1,1);
-     //   console.log(pixelData);
+        let pixelData = context.getImageData(1,1,1,1);
+        console.log(pixelData);
     }
 
     render() {
