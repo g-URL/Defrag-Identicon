@@ -9,7 +9,7 @@ class IdenticonForm extends React.Component {
         super(props);
 
         this.state = { 
-            handle: '',
+            handle: 'g-url',
             url: '',
         };
         this.handleChange = this.handleChange.bind(this);
@@ -20,10 +20,19 @@ class IdenticonForm extends React.Component {
         this.setState({ handle: event.target.value });
     }
 
+    // NEED TO CLICK BUTTON TWICE TO LOAD IMAGE INTO CANVAS?
     handleSubmit(event) {
         event.preventDefault();
         console.log(this.state.handle);
         this.setState({ url: 'https://github.com/identicons/'+this.state.handle+'.png' })
+
+        // https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
+        var c = document.getElementById("myCanvas");
+        var ctx = c.getContext("2d");
+        var img = document.getElementById("identicon")
+        img.src = this.state.url;
+        ctx.drawImage(img, 0, 0);
+
     }
 
     render() {
@@ -35,7 +44,10 @@ class IdenticonForm extends React.Component {
                     <input type='text' value={this.state.handle} onChange={this.handleChange} />
                     <button type='submit'>Fetch Identicon!</button>    
                 </form>
-                <img src={this.state.url}/>
+                <img id='identicon' width='420' height='420' src={this.state.url} alt=''/>
+                <br></br>
+                <canvas id='myCanvas' height='420' width='420'>
+                </canvas>
             </React.Fragment>
         );
     }
