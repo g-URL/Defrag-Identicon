@@ -45,6 +45,8 @@ class IdenticonForm extends React.Component {
         this.setState({ url: 'https://github.com/identicons/'+event.target.value+'.png' });
     }
 
+
+    
     // NEED TO CLICK BUTTON TWICE TO LOAD IMAGE INTO CANVAS?
     handleSubmit(event) {
         event.preventDefault();         // prevents form data from clearing after button is pressed
@@ -53,6 +55,8 @@ class IdenticonForm extends React.Component {
         // https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
         const canvas = document.getElementById('myCanvas');
         const context = canvas.getContext('2d');
+
+        // read this later: https://stackoverflow.com/questions/49432579/await-is-only-valid-in-async-function
 
         // https://stackoverflow.com/questions/59604274/how-can-i-use-an-image-on-an-html5-canvas-without-previously-having-an-image-on
         let img = document.createElement('img');
