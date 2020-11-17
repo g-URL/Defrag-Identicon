@@ -1,10 +1,8 @@
 # Defrag Identicon
-Enter your GitHub handle and then enter the associated letters to defrag your identicon.
-
 Click [HERE](https://g-url.github.io/Defrag-Identicon/) to defrag your identicon!
 
 ### Instructions
-* Enter your GitHub handle and press the 'Fetch Identicon!' button.
+* Enter your GitHub handle and click the 'Fetch Identicon!' button.
 * Enter the letters associated with colour or negative-space (not both!) and click the 'Defrag Identicon!' button.
 
 ### History and Motivation
