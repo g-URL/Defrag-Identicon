@@ -37,6 +37,9 @@ class IdenticonForm extends React.Component {
         this.move = new Image(64, 64);
         this.move.src = './assets/icons/move.png';
 
+        this.moveV2 = new Image(64, 64);
+        this.moveV2.src = './assets/icons/moveV2.png';
+
         this.optimized = new Image(64, 64);
         this.optimized.src = './assets/icons/optimized.png';
 
@@ -128,12 +131,12 @@ class IdenticonForm extends React.Component {
                             this.defragContext.drawImage(this.bad, row, column);
 
                         } else {
-                            this.defragContext.drawImage(this.move, row, column);
+                            this.defragContext.drawImage(this.moveV2, row, column);
                         }
 
                     } else {
                         if (i <= toBeMovedPosition) {
-                            this.defragContext.drawImage(this.move, row, column);
+                            this.defragContext.drawImage(this.moveV2, row, column);
 
                         } else {
                             this.defragContext.drawImage(this.bad, row, column);
@@ -153,12 +156,12 @@ class IdenticonForm extends React.Component {
                             this.defragContext.drawImage(this.bad, row, column);
 
                         } else {
-                            this.defragContext.drawImage(this.move, row, column);
+                            this.defragContext.drawImage(this.moveV2, row, column);
                         }
 
                     } else {
                         if (i <= toBeMovedPosition2) {
-                            this.defragContext.drawImage(this.move, row, column);
+                            this.defragContext.drawImage(this.moveV2, row, column);
 
                         } else {
                             this.defragContext.drawImage(this.bad, row, column);
@@ -222,7 +225,7 @@ class IdenticonForm extends React.Component {
         this.defragCanvas = document.getElementById('defragCanvas');
         this.defragContext = this.defragCanvas.getContext('2d');
         this.defragContext.clearRect(0, 0, 420, 420);
-        
+
         this.defragContext.fillStyle = '#F0F0F0';
         this.defragContext.fillRect(0, 0, 420, 420);
 
