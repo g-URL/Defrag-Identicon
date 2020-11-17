@@ -222,7 +222,9 @@ class IdenticonForm extends React.Component {
         this.defragCanvas = document.getElementById('defragCanvas');
         this.defragContext = this.defragCanvas.getContext('2d');
         this.defragContext.clearRect(0, 0, 420, 420);
-        this.defragCanvas.style = 'background-color: rgb(240, 240, 240)'
+        
+        this.defragContext.fillStyle = '#F0F0F0';
+        this.defragContext.fillRect(0, 0, 420, 420);
 
         // NEED TO SORT identiconLetters
     }
