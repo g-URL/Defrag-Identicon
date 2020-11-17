@@ -8,10 +8,12 @@ class IdenticonForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { url: '' };
+        this.state = { handle: 'g-url', identiconLetters: 'CGIKLNOQRSUVXY' };
         
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleChange2 = this.handleChange2.bind(this);
+        this.handleSubmit2 = this.handleSubmit2.bind(this);
 
         this.original = new Image(420,420);
 
@@ -42,64 +44,100 @@ class IdenticonForm extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({ url: 'https://github.com/identicons/'+event.target.value+'.png' });
+        this.setState({ handle: event.target.value });
     }
-
 
     
     // NEED TO CLICK BUTTON TWICE TO LOAD IMAGE INTO CANVAS?
     handleSubmit(event) {
         event.preventDefault();         // prevents form data from clearing after button is pressed
-        console.log(this.state.url);
+        console.log(this.state.handle);
 
-        // https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
-        const canvas = document.getElementById('myCanvas');
-        const context = canvas.getContext('2d');
+        if (this.state.handle) {
+            // https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
+            const canvas = document.getElementById('myCanvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.style = 'background: url(https://github.com/identicons/'+this.state.handle+'.png)';
 
-        canvas.style = 'background: url('+this.state.url+')';
+            context.font = '32px Arial';
 
-        context.font = '32px Arial';
+            let letter = 'A';
+            for (let i = 0; i < 5; i++) {
+                for (let j = 0; j < 5; j++) {
+                    context.fillText(letter, (70 + (j*70)) - 12, 70 + (70*i) + 12);
+                    letter = String.fromCharCode(letter.charCodeAt() + 1);
+                }
+            }
+
+            // https://stackoverflow.com/questions/59604274/how-can-i-use-an-image-on-an-html5-canvas-without-previously-having-an-image-on
+            // let img = document.createElement('img');
+            // img.onload = function() {
+            //     context.drawImage(img, 10, 10);
+            //     context.drawLine
+            // }
+            // img.src = this.state.url;       // it's better if this follows the above code, not sure why
+        }
+    }
+
+
+    handleChange2(event) {
+        this.setState({ identiconLetters: event.target.value });
+    }
+
+    handleSubmit2(event) {
+        event.preventDefault();         // prevents form data from clearing after button is pressed
+        console.log(this.state.identiconLetters);
+
+        const canvas2 = document.getElementById('myCanvas2');
+        const context2 = canvas2.getContext('2d');
+
+        canvas2.style = 'background-color: rgb(240, 240, 240)';
+
+        let length = this.state.identiconLetters.length;
+
+        for (let i = 0; i < length; i++) {
+            const letterPosition = this.state.identiconLetters[i].charCodeAt()-'A'.charCodeAt();
+            const rowPosition = (letterPosition/5) >> 0;
+            const columnPosition = letterPosition - 5*rowPosition;
+            context2.drawImage(this.optimized, 38 + 68*columnPosition, 38 + 68*rowPosition);
+        }
 
         let letter = 'A';
         for (let i = 0; i < 5; i++) {
             for (let j = 0; j < 5; j++) {
-                context.fillText(letter, (70 + (j*70)) - 12, 70 + (70*i) + 12);
+                context2.fillText(letter, (70 + (j*70)) - 12, 70 + (70*i) + 12);
                 letter = String.fromCharCode(letter.charCodeAt() + 1);
+                
             }
         }
-
-
-        // read this later: https://stackoverflow.com/questions/49432579/await-is-only-valid-in-async-function
-
-        // https://stackoverflow.com/questions/59604274/how-can-i-use-an-image-on-an-html5-canvas-without-previously-having-an-image-on
-        // let img = document.createElement('img');
-        // img.onload = function() {
-        //     context.drawImage(img, 10, 10);
-        //     context.drawLine
-        // }
-        // img.src = this.state.url;       // it's better if this follows the above code, not sure why
     }
+
+
 
     render() {
         return (
             <React.Fragment>
+
                 <form onSubmit={this.handleSubmit}>
                     <label htmlFor='handle'>Enter GitHub Handle:</label>
                     <br></br>
                     <input type='text' value={this.state.handle} onChange={this.handleChange} />
                     <button type='submit'>Fetch Identicon!</button>    
                 </form>
-                {/* <img id='identicon' width='420' height='420' src ={this.state.url} />
-                <br></br> */}
-                <canvas id='myCanvas' height='420' width='420'>
-                </canvas>
+                <canvas id='myCanvas' height='420' width='420' />
 
-                {/* <form>
-                    <label htmlFor='list'>Enter Letters Corresponding with Identicon:</label>
+                <form onSubmit={this.handleSubmit2}>
+                    <label htmlFor='defragletters'>Enter Identicon Letters:</label>
                     <br></br>
-                    <input type='text'/>
+                    <input type='text' value={this.state.identiconLetters} onChange={this.handleChange2} />
                     <button type='submit'>Defrag Identicon!</button>    
-                </form> */}
+                </form>
+                <canvas id='myCanvas2' height='420' width='420' />
+
+
+
+
             </React.Fragment>
         );
     }
