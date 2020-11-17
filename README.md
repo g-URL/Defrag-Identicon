@@ -8,7 +8,7 @@ Click [HERE](https://g-url.github.io/Defrag-Identicon/) to defrag your identicon
 * Enter the letters associated with colour or negative-space (not both!) and click the 'Defrag Identicon!' button.
 
 ### History and Motivation
-Watching the defragmenter was a favourite part of my childhood! Years ago I was feeling nostalgic and decided to defrag my identicon by hand using GIMP. I always liked how it looked but thought it would be more interesting if I could automate the defrag process.
+Watching the defragmenter was a favourite part of my childhood! Years ago I was feeling nostalgic and decided to defragment my identicon by hand using GIMP. I always liked how it looked but thought it would be more interesting if I could automate the process.
 
 ### Built With
 * [React](https://reactjs.org/) - UI JavaScript Library
