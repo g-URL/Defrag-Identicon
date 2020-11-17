@@ -87,8 +87,8 @@ class IdenticonForm extends React.Component {
         this.setState({ identiconLetters: event.target.value });
     }
 
-    getLocation(lowerBound, length) {
-        let location = (Math.random()*(length-1-lowerBound) >> 0) + lowerBound;     // [lowerBound, length)
+    getLocation(lowerBound, upperBound) {
+        let location = (Math.random()*(upperBound-1-lowerBound) >> 0) + lowerBound;     // [lowerBound, length)
         return location;
     }
 
@@ -143,11 +143,6 @@ class IdenticonForm extends React.Component {
                         }                    
                     }
                 }
-    
-                // draw write
-                if (i == writePosition) {
-                    this.defragContext.drawImage(this.write, row, column);
-                }
 
                 // draw second batch of bad/toBeMoved
                 if (i > writePosition) {
@@ -169,9 +164,14 @@ class IdenticonForm extends React.Component {
                     }
                 }
 
-                // can overwrite write
+                // draw read
                 if (i == readPosition) {
                     this.defragContext.drawImage(this.read, row, column);
+                }
+
+                // can overwrite read
+                if (i == writePosition) {
+                    this.defragContext.drawImage(this.write, row, column);
                 }
 
                 // overwrite possible bad/toBeMoved with middle and end
@@ -228,8 +228,13 @@ class IdenticonForm extends React.Component {
 
         this.defragContext.fillStyle = '#F0F0F0';
         this.defragContext.fillRect(0, 0, 420, 420);
+    }
 
-        // NEED TO SORT identiconLetters
+    // could sanitize further for bad input such as spaces and letters
+    sanitizeIdenticonLetters() {
+        let letters = new Set(this.state.identiconLetters.toUpperCase());
+        letters = Array.from(letters).sort();
+        this.state.identiconLetters = letters.join('');
     }
 
     submitDefrag(event) {
@@ -237,6 +242,7 @@ class IdenticonForm extends React.Component {
         event.preventDefault();
 
         if (this.state.identiconLetters) {
+            this.sanitizeIdenticonLetters();
             this.generateDefragCanvas();
             this.drawIcons();
         }
