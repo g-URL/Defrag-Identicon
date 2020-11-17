@@ -21,7 +21,7 @@ git clone https://github.com/g-URL/Defrag-Identicon.git
 
 2. Setup a local web server.
 
-To run the game locally, you will need to setup a local web server and adjust the root/directory from the default to your Git directory. I used [XAMPP](https://www.apachefriends.org/index.html).
+To run locally, you will need to setup a local web server and adjust the root/directory from the default to your Git directory. I used [XAMPP](https://www.apachefriends.org/index.html).
 
 Using XAMPP, configure the httpd.conf file:
 ```
