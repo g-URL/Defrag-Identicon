@@ -8,10 +8,12 @@ class IdenticonForm extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = { handle: 'g-url', url: '' };
+        this.state = { url: '' };
         
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.original = new Image(420,420);
 
         // icons
         this.bad = new Image(64,64);
@@ -40,28 +42,24 @@ class IdenticonForm extends React.Component {
     }
 
     handleChange(event) {
-        this.setState({ handle: event.target.value });
+        this.setState({ url: 'https://github.com/identicons/'+event.target.value+'.png' });
     }
 
     // NEED TO CLICK BUTTON TWICE TO LOAD IMAGE INTO CANVAS?
     handleSubmit(event) {
-        event.preventDefault();
-        console.log(this.state.handle);
-        this.setState({ url: 'https://github.com/identicons/'+this.state.handle+'.png' })
+        event.preventDefault();         // prevents form data from clearing after button is pressed
+        console.log(this.state.url);
 
         // https://www.w3schools.com/tags/tryit.asp?filename=tryhtml5_canvas_drawimage
         const canvas = document.getElementById('myCanvas');
         const context = canvas.getContext('2d');
-        let img = document.getElementById('identicon');
-        img.src = this.state.url;
-        context.drawImage(img, 0, 0);   // looks like coordinates reflect upper-left-hand corner
-        
-        // CANNOT GET 3RD PARTY PIXEL INFORMATION FROM TAINTED CANVAS - FIND ANOTHER WAY
-        //let pixelData = context.getImageData(1,1,1,1);
-        //console.log(pixelData);
 
-        context.drawImage(this.read, 0, 0);
-
+        // https://stackoverflow.com/questions/59604274/how-can-i-use-an-image-on-an-html5-canvas-without-previously-having-an-image-on
+        let img = document.createElement('img');
+        img.onload = function() {
+            context.drawImage(img, 10, 10);
+        }
+        img.src = this.state.url;       // it's better if this follows the above code, not sure why
     }
 
     render() {
@@ -73,8 +71,8 @@ class IdenticonForm extends React.Component {
                     <input type='text' value={this.state.handle} onChange={this.handleChange} />
                     <button type='submit'>Fetch Identicon!</button>    
                 </form>
-                <img id='identicon' width='420' height='420' src ={this.state.url} />
-                <br></br>
+                {/* <img id='identicon' width='420' height='420' src ={this.state.url} />
+                <br></br> */}
                 <canvas id='myCanvas' height='420' width='420'>
                 </canvas>
             </React.Fragment>
