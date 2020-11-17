@@ -10,11 +10,10 @@ class IdenticonForm extends React.Component {
 
         this.state = { handle: 'g-url', identiconLetters: 'CGIKLNOQRSUVXY' };
         
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange2 = this.handleChange2.bind(this);
-        this.handleSubmit2 = this.handleSubmit2.bind(this);
-       // this.initializeIdenticonCanvas = this.initializeIdenticonCanvas(this);
+        this.handleIdenticonChange = this.handleIdenticonChange.bind(this);
+        this.submitIdenticon = this.submitIdenticon.bind(this);
+        this.handleDefragChange = this.handleDefragChange.bind(this);
+        this.submitDefrag = this.submitDefrag.bind(this);
 
         this.identiconCanvas;
         this.identiconContext;
@@ -48,7 +47,7 @@ class IdenticonForm extends React.Component {
         this.write.src = './assets/icons/write.png';
     }
 
-    handleChange(event) {
+    handleIdenticonChange(event) {
         this.setState({ handle: event.target.value });
     }
 
@@ -72,18 +71,151 @@ class IdenticonForm extends React.Component {
         this.printLetters(this.identiconContext);
     }
 
-    handleSubmit(event) {
+    submitIdenticon(event) {
         // prevents form data from clearing after button is pressed
-        event.preventDefault();         
-        console.log(this.state.handle);
+        event.preventDefault();
 
         if (this.state.handle) {
             this.generateIdenticonCanvas();
         }
     }
 
-    handleChange2(event) {
+    handleDefragChange(event) {
         this.setState({ identiconLetters: event.target.value });
+    }
+
+    getLocation(lowerBound, length) {
+        let location = (Math.random()*(length-1-lowerBound) >> 0) + lowerBound;     // [lowerBound, length)
+        return location;
+    }
+
+    drawIcons() {
+        let length = this.state.identiconLetters.length;
+
+        let writeLocation = this.getLocation(0, length);
+        let readLocation = this.getLocation(writeLocation, length);
+
+        let writePosition = this.state.identiconLetters[writeLocation].charCodeAt()-'A'.charCodeAt();
+        let readPosition = this.state.identiconLetters[readLocation].charCodeAt()-'A'.charCodeAt();
+
+        let badPosition = this.state.identiconLetters[this.getLocation(0, writeLocation)].charCodeAt()-'A'.charCodeAt();        
+        let toBeMovedPosition = this.state.identiconLetters[this.getLocation(0, writeLocation)].charCodeAt()-'A'.charCodeAt();
+
+        let badPosition2 = this.state.identiconLetters[this.getLocation(writeLocation, length)].charCodeAt()-'A'.charCodeAt();
+        let toBeMovedPosition2 = this.state.identiconLetters[this.getLocation(writeLocation, length)].charCodeAt()-'A'.charCodeAt();
+
+        let middlePosition = this.state.identiconLetters[this.getLocation(readLocation, length)].charCodeAt()-'A'.charCodeAt();
+        let endPosition = this.state.identiconLetters[this.getLocation(readLocation, length)].charCodeAt()-'A'.charCodeAt();
+
+        let letterIndex = 0;
+        let letterPosition;
+        for (let i = 0; i < 25; i++) {
+            letterPosition = this.state.identiconLetters[letterIndex].charCodeAt()-'A'.charCodeAt();
+
+            let rowPosition = (i/5) >> 0;
+            let columnPosition = i - 5*rowPosition;
+
+            let row = 38 + 68*columnPosition;
+            let column = 38 + 68*rowPosition;
+
+            // populate identicon-space
+            if (i == letterPosition) {
+
+                // draw bad/toBeMoved
+                if (i < writePosition) {
+                    if (badPosition < toBeMovedPosition) {
+                        if (i <= badPosition) {
+                            this.defragContext.drawImage(this.bad, row, column);
+
+                        } else {
+                            this.defragContext.drawImage(this.move, row, column);
+                        }
+
+                    } else {
+                        if (i <= toBeMovedPosition) {
+                            this.defragContext.drawImage(this.move, row, column);
+
+                        } else {
+                            this.defragContext.drawImage(this.bad, row, column);
+                        }                    
+                    }
+                }
+    
+                // draw write
+                if (i == writePosition) {
+                    this.defragContext.drawImage(this.write, row, column);
+                }
+
+                // draw second batch of bad/toBeMoved
+                if (i > writePosition) {
+                    if (badPosition2 < toBeMovedPosition2) {
+                        if (i <= badPosition2) {
+                            this.defragContext.drawImage(this.bad, row, column);
+
+                        } else {
+                            this.defragContext.drawImage(this.move, row, column);
+                        }
+
+                    } else {
+                        if (i <= toBeMovedPosition2) {
+                            this.defragContext.drawImage(this.move, row, column);
+
+                        } else {
+                            this.defragContext.drawImage(this.bad, row, column);
+                        }                    
+                    }
+                }
+
+                // can overwrite write
+                if (i == readPosition) {
+                    this.defragContext.drawImage(this.read, row, column);
+                }
+
+                // overwrite possible bad/toBeMoved with middle and end
+                if (i > readPosition) {
+                    if (middlePosition < endPosition) {
+                        if (i <= middlePosition) {
+                            this.defragContext.drawImage(this.middle, row, column);
+
+                        } else {
+                            this.defragContext.drawImage(this.end, row, column);
+                        }
+
+                    } else {
+                        if (i <= endPosition) {
+                            this.defragContext.drawImage(this.end, row, column);
+
+                        } else {
+                            this.defragContext.drawImage(this.middle, row, column);
+                        }                    
+                    }                    
+                }
+
+                // increment index/position
+                if (letterIndex < length-1) {
+                    letterIndex++;
+                }
+
+            // populate negative-space
+            } else {
+
+                // everything preceeding write should be optimized, bad or toBeMoved
+                if (i < writePosition) {
+                    this.defragContext.drawImage(this.optimized, 38 + 68*columnPosition, 38 + 68*rowPosition);                    
+                }
+
+                /*
+                if (writePosition < i && i < readPosition) {
+                    // do nothing
+                }
+                */
+
+                // everything after read should be beginning, bad or toBeMoved
+                if (i > readPosition) {
+                    this.defragContext.drawImage(this.beginning, 38 + 68*columnPosition, 38 + 68*rowPosition);                       
+                }
+            }
+        }
     }
 
     generateDefragCanvas() {
@@ -91,164 +223,37 @@ class IdenticonForm extends React.Component {
         this.defragContext = this.defragCanvas.getContext('2d');
         this.defragContext.clearRect(0, 0, 420, 420);
         this.defragCanvas.style = 'background-color: rgb(240, 240, 240)'
+
+        // NEED TO SORT identiconLetters
     }
 
+    submitDefrag(event) {
+        // prevents form data from clearing after button is pressed
+        event.preventDefault();
 
-    drawIcons() {
-        let length = this.state.identiconLetters.length;
-        console.log(length);
-
-        let writeLocation = (Math.random()*length) >> 0;    // [0,13)
-        let readLocation = (Math.random()*(length-1-writeLocation) >> 0) + writeLocation;   // [0,13]
-
-
-
-        let badLocation = (Math.random()*writeLocation) >> 0;       // [0, writeLocation)
-        let toBeMovedLocation = (Math.random()*writeLocation) >> 0; // [0, writeLocation)
-
-        let badLocation2 = (Math.random()*(length-1-writeLocation) >> 0) + writeLocation;   // [0,13]
-        let toBeMovedLocation2 = (Math.random()*(length-1-writeLocation) >> 0) + writeLocation;   // [0,13]
-
-        let middleLocation = (Math.random()*(length-1-readLocation) >> 0) + readLocation;   // [0,13]
-        let endLocation = (Math.random()*(length-1-readLocation) >> 0) + readLocation;   // [0,13]
-
-        console.log(writeLocation, readLocation, badLocation, toBeMovedLocation);
-
-        let writePosition = this.state.identiconLetters[writeLocation].charCodeAt()-'A'.charCodeAt();
-        let readPosition = this.state.identiconLetters[readLocation].charCodeAt()-'A'.charCodeAt();
-
-        let badPosition = this.state.identiconLetters[badLocation].charCodeAt()-'A'.charCodeAt();
-        let toBeMovedPosition = this.state.identiconLetters[toBeMovedLocation].charCodeAt()-'A'.charCodeAt();
-
-        let badPosition2 = this.state.identiconLetters[badLocation2].charCodeAt()-'A'.charCodeAt();
-        let toBeMovedPosition2 = this.state.identiconLetters[toBeMovedLocation2].charCodeAt()-'A'.charCodeAt();
-
-        let middlePosition = this.state.identiconLetters[middleLocation].charCodeAt()-'A'.charCodeAt();
-        let endPosition = this.state.identiconLetters[endLocation].charCodeAt()-'A'.charCodeAt();
-
-
-        console.log(writePosition, readPosition, badPosition, toBeMovedPosition);
-
-        let letterIndex = 0;
-        let letterPosition = this.state.identiconLetters[letterIndex].charCodeAt()-'A'.charCodeAt();
-        for (let i = 0; i < 25; i++) {
-            const rowPosition = (i/5) >> 0;
-            const columnPosition = i - 5*rowPosition;
-
-            if (i == letterPosition) {
-
-                if (i < writePosition) {
-                    if (badPosition < toBeMovedPosition) {
-                        if (i <= badPosition) {
-                            this.defragContext.drawImage(this.bad, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        } else {
-                            this.defragContext.drawImage(this.move, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        }
-                    } else {
-                        if (i <= toBeMovedPosition) {
-                            this.defragContext.drawImage(this.move, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        } else {
-                            this.defragContext.drawImage(this.bad, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        }                    
-                    }
-                }
-    
-                if (i == writePosition) {
-                    this.defragContext.drawImage(this.write, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                }
-
-
-                if (i > writePosition) {
-                    if (badPosition2 < toBeMovedPosition2) {
-                        if (i <= badPosition2) {
-                            this.defragContext.drawImage(this.bad, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        } else {
-                            this.defragContext.drawImage(this.move, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        }
-                    } else {
-                        if (i <= toBeMovedPosition2) {
-                            this.defragContext.drawImage(this.move, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        } else {
-                            this.defragContext.drawImage(this.bad, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        }                    
-                    }
-                }
-
-
-                if (i == readPosition) {
-                    this.defragContext.drawImage(this.read, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                }
-
-                if (i > readPosition) {
-                    if (middlePosition < endPosition) {
-                        if (i <= middlePosition) {
-                            this.defragContext.drawImage(this.middle, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        } else {
-                            this.defragContext.drawImage(this.end, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        }
-                    } else {
-                        if (i <= endPosition) {
-                            this.defragContext.drawImage(this.end, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        } else {
-                            this.defragContext.drawImage(this.middle, 38 + 68*columnPosition, 38 + 68*rowPosition);
-                        }                    
-                    }                    
-                }
-
-                if (letterIndex < length-1) {
-                    letterIndex++;
-                    letterPosition = this.state.identiconLetters[letterIndex].charCodeAt()-'A'.charCodeAt();
-                }
-
-
-            } else {
-                if (i < writePosition) {
-                    this.defragContext.drawImage(this.optimized, 38 + 68*columnPosition, 38 + 68*rowPosition);                    
-                }
-
-                if (writePosition < i && i < readPosition) {
-
-                }
-
-                if (i > readPosition) {
-                    this.defragContext.drawImage(this.beginning, 38 + 68*columnPosition, 38 + 68*rowPosition);                       
-                }
-
-            }
+        if (this.state.identiconLetters) {
+            this.generateDefragCanvas();
+            this.drawIcons();
         }
     }
-
-
-    handleSubmit2(event) {
-        // prevents form data from clearing after button is pressed
-        event.preventDefault();         
-        console.log(this.state.identiconLetters);
-
-        this.generateDefragCanvas();
-        this.drawIcons();
-    }
-
-
 
     render() {
         return (
             <React.Fragment>
-
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.submitIdenticon}>
                     <label htmlFor='handle'>Enter GitHub Handle:</label>
                     <br></br>
-                    <input type='text' value={this.state.handle} onChange={this.handleChange} />
+                    <input type='text' value={this.state.handle} onChange={this.handleIdenticonChange} />
                     <button type='submit'>Fetch Identicon!</button>    
                 </form>
                 <canvas id='identiconCanvas' height='420' width='420' />
-                <form onSubmit={this.handleSubmit2}>
+                <form onSubmit={this.submitDefrag}>
                     <label htmlFor='defragletters'>Enter Identicon Letters:</label>
                     <br></br>
-                    <input type='text' value={this.state.identiconLetters} onChange={this.handleChange2} />
+                    <input type='text' value={this.state.identiconLetters} onChange={this.handleDefragChange} />
                     <button type='submit'>Defrag Identicon!</button>    
                 </form>
                 <canvas id='defragCanvas' height='420' width='420' />
-
             </React.Fragment>
         );
     }
