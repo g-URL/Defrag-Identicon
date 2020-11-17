@@ -56,14 +56,28 @@ class IdenticonForm extends React.Component {
         const canvas = document.getElementById('myCanvas');
         const context = canvas.getContext('2d');
 
+        canvas.style = 'background: url('+this.state.url+')';
+
+        context.font = '32px Arial';
+
+        let letter = 'A';
+        for (let i = 0; i < 5; i++) {
+            for (let j = 0; j < 5; j++) {
+                context.fillText(letter, (70 + (j*70)) - 12, 70 + (70*i) + 12);
+                letter = String.fromCharCode(letter.charCodeAt() + 1);
+            }
+        }
+
+
         // read this later: https://stackoverflow.com/questions/49432579/await-is-only-valid-in-async-function
 
         // https://stackoverflow.com/questions/59604274/how-can-i-use-an-image-on-an-html5-canvas-without-previously-having-an-image-on
-        let img = document.createElement('img');
-        img.onload = function() {
-            context.drawImage(img, 10, 10);
-        }
-        img.src = this.state.url;       // it's better if this follows the above code, not sure why
+        // let img = document.createElement('img');
+        // img.onload = function() {
+        //     context.drawImage(img, 10, 10);
+        //     context.drawLine
+        // }
+        // img.src = this.state.url;       // it's better if this follows the above code, not sure why
     }
 
     render() {
@@ -79,6 +93,13 @@ class IdenticonForm extends React.Component {
                 <br></br> */}
                 <canvas id='myCanvas' height='420' width='420'>
                 </canvas>
+
+                {/* <form>
+                    <label htmlFor='list'>Enter Letters Corresponding with Identicon:</label>
+                    <br></br>
+                    <input type='text'/>
+                    <button type='submit'>Defrag Identicon!</button>    
+                </form> */}
             </React.Fragment>
         );
     }
