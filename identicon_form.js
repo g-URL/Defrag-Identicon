@@ -10,8 +10,11 @@ class IdenticonForm extends React.Component {
 
         this.state = { handle: 'g-url', identiconLetters: 'CGIKLNOQRSUVXY' };
         
+        this.loadIdenticon = this.loadIdenticon.bind(this);
         this.handleIdenticonChange = this.handleIdenticonChange.bind(this);
         this.submitIdenticon = this.submitIdenticon.bind(this);
+
+        this.loadDefrag = this.loadDefrag.bind(this);        
         this.handleDefragChange = this.handleDefragChange.bind(this);
         this.submitDefrag = this.submitDefrag.bind(this);
 
@@ -67,11 +70,11 @@ class IdenticonForm extends React.Component {
     }
 
     generateIdenticonCanvas() {
-        this.identiconCanvas = document.getElementById('identiconCanvas');
-        this.identiconContext = this.identiconCanvas.getContext('2d');
+        //this.identiconCanvas = document.getElementById('identiconCanvas');
+        //this.identiconContext = this.identiconCanvas.getContext('2d');
         this.identiconCanvas.style = 'background: url(https://github.com/identicons/'+this.state.handle+'.png)';
 
-        this.printLetters(this.identiconContext);
+        //this.printLetters(this.identiconContext);
     }
 
     submitIdenticon(event) {
@@ -222,8 +225,8 @@ class IdenticonForm extends React.Component {
     }
 
     generateDefragCanvas() {
-        this.defragCanvas = document.getElementById('defragCanvas');
-        this.defragContext = this.defragCanvas.getContext('2d');
+//        this.defragCanvas = document.getElementById('defragCanvas');
+//        this.defragContext = this.defragCanvas.getContext('2d');
         this.defragContext.clearRect(0, 0, 420, 420);
 
         this.defragContext.fillStyle = '#F0F0F0';
@@ -248,6 +251,19 @@ class IdenticonForm extends React.Component {
         }
     }
 
+    loadIdenticon() {
+        this.identiconCanvas = document.getElementById('identiconCanvas');
+        this.identiconContext = this.identiconCanvas.getContext('2d');
+        this.identiconCanvas.style = 'background: url(./files/35358105.png)';
+        this.printLetters(this.identiconContext);
+    }
+
+    loadDefrag() {
+        this.defragCanvas = document.getElementById('defragCanvas');
+        this.defragContext = this.defragCanvas.getContext('2d');
+        this.defragCanvas.style = 'background: url(./files/canvas.png)';
+    }    
+
     render() {
         return (
             <React.Fragment>
@@ -257,14 +273,14 @@ class IdenticonForm extends React.Component {
                     <input type='text' value={this.state.handle} onChange={this.handleIdenticonChange} />
                     <button type='submit'>Fetch Identicon!</button>    
                 </form>
-                <canvas id='identiconCanvas' height='420' width='420' />
+                <canvas id='identiconCanvas' height='420' width='420' ref={this.loadIdenticon} />
                 <form onSubmit={this.submitDefrag}>
                     <label htmlFor='defragletters'>Enter Identicon Letters:</label>
                     <br></br>
                     <input type='text' value={this.state.identiconLetters} onChange={this.handleDefragChange} />
                     <button type='submit'>Defrag Identicon!</button>    
                 </form>
-                <canvas id='defragCanvas' height='420' width='420' />
+                <canvas id='defragCanvas' height='420' width='420' ref={this.loadDefrag} />
             </React.Fragment>
         );
     }
